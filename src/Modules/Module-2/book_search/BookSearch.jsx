@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import Footer from "../../../common_components/Footer";
 import MenuBar from "./subcomponents/MenuBar";
 import MiddleSection from "./subcomponents/MiddleSection";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import login_info from "../../../login_info";
 import { _fetchBooks, _userInfo } from "../../../utils/axios_controllers";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 
 export default function BookSearch() {
+  const navigate = useNavigate();
   // --- Fetch user info (safe for both logged and guest users)
   const { data, isLoading, error } = useQuery({
     queryKey: ["userInfo"],
@@ -67,7 +68,9 @@ export default function BookSearch() {
         tmp_books.push(tmp);
 
         // collect unique genres
-        tmp_genres.push(...b.genres.filter((item) => !tmp_genres.includes(item)));
+        tmp_genres.push(
+          ...b.genres.filter((item) => !tmp_genres.includes(item))
+        );
       }
 
       set_genres(tmp_genres);
@@ -94,7 +97,7 @@ export default function BookSearch() {
 
   return (
     <>
-    <div className="relative bg-gradient-to-br from-amber-300 to-orange-400 rounded-2xl p-5 shadow-xl border-4 border-amber-200 transform hover:rotate-1 transition-transform duration-300">
+      <div className="relative bg-gradient-to-br from-amber-300 to-orange-400 rounded-2xl p-5 shadow-xl border-4 border-amber-200 transform hover:rotate-1 transition-transform duration-300">
         {/* Floating elements */}
         <div className="absolute -top-3 -left-3 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg text-sm">
           📚
@@ -129,219 +132,227 @@ export default function BookSearch() {
 
           {/* Action button */}
           <button
-            onClick={() => navigate_to("/contest")}
+            onClick={() => navigate("/contest")}
             className="flex items-center gap-2 px-5 py-3 bg-white text-amber-700 rounded-xl font-bold hover:shadow-2xl transform hover:scale-105 hover:rotate-2 transition-all duration-200 border-2 border-amber-200"
           >
             <span>Let's Go!</span>
             <span className="text-xl">🚀</span>
           </button>
         </div>
-    </div>
-
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-4 left-4 sm:top-10 sm:left-10 text-amber-200 text-2xl sm:text-4xl opacity-20">📚</div>
-        <div className="absolute bottom-4 right-4 sm:bottom-20 sm:right-20 text-amber-200 text-2xl sm:text-3xl opacity-20">📖</div>
-        <div className="absolute top-1/3 right-1/4 text-orange-200 text-xl sm:text-2xl opacity-20 hidden sm:block">🔖</div>
       </div>
 
-      <div className="relative flex flex-col min-h-screen">
-        <MenuBar
-          books={books}
-          change_searched_keyword={change_searched_keyword}
-          change_current_genre={change_current_genre}
-          change_current_page={change_current_page}
-          change_books_to_show={change_books_to_show}
-          change_is_sorted_by_rating={change_is_sorted_by_rating}
-        />
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-4 left-4 sm:top-10 sm:left-10 text-amber-200 text-2xl sm:text-4xl opacity-20">
+            📚
+          </div>
+          <div className="absolute bottom-4 right-4 sm:bottom-20 sm:right-20 text-amber-200 text-2xl sm:text-3xl opacity-20">
+            📖
+          </div>
+          <div className="absolute top-1/3 right-1/4 text-orange-200 text-xl sm:text-2xl opacity-20 hidden sm:block">
+            🔖
+          </div>
+        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-          {/* Header Section */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6 sm:mb-8"
-          >
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4 sm:mb-6">
-              <div className="flex items-center gap-3 sm:gap-4 w-full lg:w-auto">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-                  <span className="text-white text-lg sm:text-xl">📚</span>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-900 break-words">
-                    {bookpage_heading_text}
-                  </h2>
-                  <p className="text-amber-600 mt-1 text-sm sm:text-base">
-                    {books_to_show.length} books found
-                  </p>
-                </div>
-              </div>
+        <div className="relative flex flex-col min-h-screen">
+          <MenuBar
+            books={books}
+            change_searched_keyword={change_searched_keyword}
+            change_current_genre={change_current_genre}
+            change_current_page={change_current_page}
+            change_books_to_show={change_books_to_show}
+            change_is_sorted_by_rating={change_is_sorted_by_rating}
+          />
 
-              <div className="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto justify-start lg:justify-end">
-                {/* Clear Filters Button */}
-                {(searched_keyword || current_genre) && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200 text-xs sm:text-sm font-medium flex-shrink-0"
-                    onClick={() => {
-                      change_is_sorted_by_rating(false);
-                      change_books_to_show(recommended_book_list(books));
-                      change_current_page(1);
-                      change_current_genre("");
-                      change_searched_keyword("");
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 sm:h-4 sm:w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                    <span className="hidden xs:inline">Clear Filters</span>
-                    <span className="xs:hidden">Clear</span>
-                  </motion.button>
-                )}
-
-                {/* Sort Toggle Button */}
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white border border-amber-300 text-amber-700 rounded-full hover:bg-amber-50 transition-all duration-200 text-xs sm:text-sm font-medium shadow-sm flex-shrink-0"
-                  onClick={() => {
-                    change_current_page(1);
-                    const books_to_sort = [...books_to_show];
-                    if (is_sorted_by_rating) {
-                      books_to_sort.sort((a, b) => a.name.localeCompare(b.name));
-                    } else {
-                      books_to_sort.sort((a, b) =>
-                        a.rating === b.rating ? 0 : a.rating > b.rating ? -1 : 1
-                      );
-                    }
-                    change_books_to_show(books_to_sort);
-                    change_is_sorted_by_rating(!is_sorted_by_rating);
-                  }}
-                >
-                  {is_sorted_by_rating ? (
-                    <>
-                      <span className="text-xs sm:text-sm">⭐</span>
-                      <span className="hidden sm:inline">Sorted by Rating</span>
-                      <span className="sm:hidden">Rating</span>
-                    </>
-                  ) : (
-                    <>
-                      <span className="text-xs sm:text-sm">🔤</span>
-                      <span className="hidden sm:inline">Sorted A-Z</span>
-                      <span className="sm:hidden">A-Z</span>
-                    </>
-                  )}
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Welcome Message */}
-            {!searched_keyword && !current_genre && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-amber-200 shadow-sm"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-white text-xs sm:text-sm">👋</span>
+          {/* Main Content */}
+          <div className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+            {/* Header Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-6 sm:mb-8"
+            >
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4 sm:mb-6">
+                <div className="flex items-center gap-3 sm:gap-4 w-full lg:w-auto">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-500 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span className="text-white text-lg sm:text-xl">📚</span>
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="font-semibold text-amber-900 text-sm sm:text-base">
-                      Welcome back, {user_name}!
-                    </h3>
-                    <p className="text-amber-600 text-xs sm:text-sm truncate">
-                      Discover your next favorite book from our curated collection
+                  <div className="min-w-0 flex-1">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-900 break-words">
+                      {bookpage_heading_text}
+                    </h2>
+                    <p className="text-amber-600 mt-1 text-sm sm:text-base">
+                      {books_to_show.length} books found
                     </p>
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </motion.div>
 
-          {/* Books Section */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            {books.length > 0 ? (
-              <MiddleSection
-                genres={genres}
-                books={books}
-                change_current_genre={change_current_genre}
-                change_searched_keyword={change_searched_keyword}
-                books_to_show={books_to_show}
-                change_books_to_show={change_books_to_show}
-                current_page={current_page}
-                change_current_page={change_current_page}
-                change_is_sorted_by_rating={change_is_sorted_by_rating}
-              />
-            ) : (
-              <div className="text-center py-12 sm:py-20">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-amber-200 border-t-amber-500 rounded-full mx-auto mb-3 sm:mb-4"
-                />
-                <h3 className="text-lg sm:text-xl font-semibold text-amber-800 mb-2">
-                  Loading Your Library
-                </h3>
-                <p className="text-amber-600 text-sm sm:text-base">
-                  Discovering amazing books for you...
-                </p>
+                <div className="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto justify-start lg:justify-end">
+                  {/* Clear Filters Button */}
+                  {(searched_keyword || current_genre) && (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-200 text-xs sm:text-sm font-medium flex-shrink-0"
+                      onClick={() => {
+                        change_is_sorted_by_rating(false);
+                        change_books_to_show(recommended_book_list(books));
+                        change_current_page(1);
+                        change_current_genre("");
+                        change_searched_keyword("");
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-3 w-3 sm:h-4 sm:w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                      <span className="hidden xs:inline">Clear Filters</span>
+                      <span className="xs:hidden">Clear</span>
+                    </motion.button>
+                  )}
+
+                  {/* Sort Toggle Button */}
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white border border-amber-300 text-amber-700 rounded-full hover:bg-amber-50 transition-all duration-200 text-xs sm:text-sm font-medium shadow-sm flex-shrink-0"
+                    onClick={() => {
+                      change_current_page(1);
+                      const books_to_sort = [...books_to_show];
+                      if (is_sorted_by_rating) {
+                        books_to_sort.sort((a, b) =>
+                          a.name.localeCompare(b.name)
+                        );
+                      } else {
+                        books_to_sort.sort((a, b) =>
+                          a.rating === b.rating
+                            ? 0
+                            : a.rating > b.rating
+                            ? -1
+                            : 1
+                        );
+                      }
+                      change_books_to_show(books_to_sort);
+                      change_is_sorted_by_rating(!is_sorted_by_rating);
+                    }}
+                  >
+                    {is_sorted_by_rating ? (
+                      <>
+                        <span className="text-xs sm:text-sm">⭐</span>
+                        <span className="hidden sm:inline">
+                          Sorted by Rating
+                        </span>
+                        <span className="sm:hidden">Rating</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-xs sm:text-sm">🔤</span>
+                        <span className="hidden sm:inline">Sorted A-Z</span>
+                        <span className="sm:hidden">A-Z</span>
+                      </>
+                    )}
+                  </motion.button>
+                </div>
               </div>
-            )}
-          </motion.div>
+
+              {/* Welcome Message */}
+              {!searched_keyword && !current_genre && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="bg-white/80 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-amber-200 shadow-sm"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs sm:text-sm">👋</span>
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-amber-900 text-sm sm:text-base">
+                        Welcome back, {user_name}!
+                      </h3>
+                      <p className="text-amber-600 text-xs sm:text-sm truncate">
+                        Discover your next favorite book from our curated
+                        collection
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </motion.div>
+
+            {/* Books Section */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {books.length > 0 ? (
+                <MiddleSection
+                  genres={genres}
+                  books={books}
+                  change_current_genre={change_current_genre}
+                  change_searched_keyword={change_searched_keyword}
+                  books_to_show={books_to_show}
+                  change_books_to_show={change_books_to_show}
+                  current_page={current_page}
+                  change_current_page={change_current_page}
+                  change_is_sorted_by_rating={change_is_sorted_by_rating}
+                />
+              ) : (
+                <div className="text-center py-12 sm:py-20">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-amber-200 border-t-amber-500 rounded-full mx-auto mb-3 sm:mb-4"
+                  />
+                  <h3 className="text-lg sm:text-xl font-semibold text-amber-800 mb-2">
+                    Loading Your Library
+                  </h3>
+                  <p className="text-amber-600 text-sm sm:text-base">
+                    Discovering amazing books for you...
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          </div>
+
+          <Footer />
         </div>
 
-        <Footer />
+        {/* Optional: Show user info loading spinner (non-blocking) */}
+        {isLoading && (
+          <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 bg-amber-500 text-white px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs shadow-lg">
+            Checking user info...
+          </div>
+        )}
+
+        {/* Optional: Error message if user info fails */}
+        {error && (
+          <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 bg-amber-100 text-amber-700 px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs shadow-lg border border-amber-200">
+            Guest mode active
+          </div>
+        )}
       </div>
-
-      {/* Optional: Show user info loading spinner (non-blocking) */}
-      {isLoading && (
-        <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 bg-amber-500 text-white px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs shadow-lg">
-          Checking user info...
-        </div>
-      )}
-
-      {/* Optional: Error message if user info fails */}
-      {error && (
-        <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 bg-amber-100 text-amber-700 px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs shadow-lg border border-amber-200">
-          Guest mode active
-        </div>
-      )}
-    </div>
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
 
 // import { useEffect, useState } from "react";
 // import Footer from "../../../common_components/Footer";
@@ -460,7 +471,7 @@ export default function BookSearch() {
 //         {/* Main Content */}
 //         <div className="flex-1 container mx-auto px-4 py-8">
 //           {/* Header Section */}
-//           <motion.div 
+//           <motion.div
 //             initial={{ opacity: 0, y: 20 }}
 //             animate={{ opacity: 1, y: 0 }}
 //             transition={{ duration: 0.6 }}
@@ -628,10 +639,6 @@ export default function BookSearch() {
 //     </div>
 //   );
 // }
-
-
-
-
 
 // import { useEffect, useState } from "react";
 // import Footer from "../../../common_components/Footer";
@@ -839,7 +846,6 @@ export default function BookSearch() {
 //     </>
 //   );
 // }
-
 
 //main
 // import { useEffect, useState } from "react";
