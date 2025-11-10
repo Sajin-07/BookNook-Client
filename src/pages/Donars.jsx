@@ -7,7 +7,7 @@ import { FaHeart, FaCrown, FaStar, FaGift } from 'react-icons/fa';
 
 const Donars = () => {
     const fetchAllDonars = async () => {
-        const response = await axios.get('http://localhost:4000/api/v1/donar');
+        const response = await axios.get('https://book-store-server-lyart.vercel.app/api/v1/donar');
         return response?.data;
     };
 
@@ -253,7 +253,7 @@ export default Donars;
 
 
 //     const fetchAllDonars = async () => {
-//         const response = await axios.get('http://localhost:4000/api/v1/donar');
+//         const response = await axios.get('https://book-store-server-lyart.vercel.app/api/v1/donar');
 //         return response?.data;
 //         console.log(response?.data, 8);
 //     };

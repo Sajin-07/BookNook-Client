@@ -1,6 +1,6 @@
 //
 //all api endpoints here
-export const base_url = "http://localhost:4000/api/v1"
+export const base_url = "https://book-store-server-lyart.vercel.app/api/v1"
 
 export const endpoints = {
   userInfo: "/auth/user-info",

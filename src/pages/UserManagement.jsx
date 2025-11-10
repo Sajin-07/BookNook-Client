@@ -14,7 +14,7 @@ const UserManagement = () => {
     // // userName = data?.data?.firstName + " " + data?.data?.lastName
 
     const fetchAllUsers = async () => {
-        const response = await axios.get('http://localhost:4000/api/v1/user/users');
+        const response = await axios.get('https://book-store-server-lyart.vercel.app/api/v1/user/users');
         console.log(response?.data, 10);
         return response?.data;
     };
