@@ -19,9 +19,9 @@ export default function Footer() {
                         <p className="text-amber-100 font-medium">
                             © 2024 BookNook. All rights reserved.
                         </p>
-                        <p className="text-amber-200 text-sm mt-1">
+                        {/* <p className="text-amber-200 text-sm mt-1">
                             Made with ❤️ for book lovers
-                        </p>
+                        </p> */}
                     </div>
 
                     {/* Social Links */}

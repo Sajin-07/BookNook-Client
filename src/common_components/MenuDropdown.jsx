@@ -4,6 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { _userInfo } from "../utils/axios_controllers";
 import AddBookRequest from "./AddBookRequest";
 import login_info from "../login_info";
+import {
+    FaUser,
+    FaBook,
+    FaSearch,
+    FaTrophy,
+    FaHeart,
+    FaBookOpen,
+    FaMedal,
+    FaUsers,
+    FaEdit,
+    FaBullseye,
+    FaPlus,
+    FaClipboardList,
+    FaTools,
+    FaSignOutAlt,
+    FaDonate
+} from "react-icons/fa";
 
 export default function MenuDropdown() {
     const navigate_to = useNavigate();
@@ -34,38 +51,38 @@ export default function MenuDropdown() {
 
     const menuItems = [
         { 
-            icon: "👤", 
+            icon: FaUser, 
             label: "Profile", 
             path: "/userprofile",
             badge: "Active"
         },
         { 
-            icon: "📚", 
+            icon: FaBook, 
             label: "My Library", 
             path: "/booklibrary" 
         },
         { 
-            icon: "🔍", 
+            icon: FaSearch, 
             label: "Browse Books", 
             path: "/booksearch" 
         },
         { 
-            icon: "🏆", 
+            icon: FaTrophy, 
             label: "Challenges", 
             path: "/challenges" 
         },
         { 
-            icon: "❤️", 
+            icon: FaHeart, 
             label: "Our Supporters", 
             path: "/donars" 
         },
         { 
-            icon: "📖", 
+            icon: FaBookOpen, 
             label: "Request a Book", 
             action: () => document.getElementById('addBookRequest_modal').showModal()
         },
         { 
-            icon: "🏅", 
+            icon: FaMedal, 
             label: "Leaderboard", 
             path: "/challange-leaderbord" 
         },
@@ -73,27 +90,27 @@ export default function MenuDropdown() {
 
     const adminItems = [
         { 
-            icon: "👥", 
+            icon: FaUsers, 
             label: "User Management", 
             path: "/user-management" 
         },
         { 
-            icon: "📝", 
+            icon: FaEdit, 
             label: "Contest Responses", 
             path: "/contest-response" 
         },
         { 
-            icon: "🎯", 
+            icon: FaBullseye, 
             label: "Create Contest", 
             path: "/create-contest" 
         },
         { 
-            icon: "📗", 
+            icon: FaPlus, 
             label: "Create Book", 
             path: "/create-book" 
         },
         { 
-            icon: "📋", 
+            icon: FaClipboardList, 
             label: "Book Requests", 
             path: "/book-requests" 
         },
@@ -107,7 +124,7 @@ export default function MenuDropdown() {
                 className="btn btn-ghost btn-circle avatar relative"
             >
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center shadow-lg border-2 border-white">
-                    <span className="text-white font-bold text-lg">📚</span>
+                    <FaBook className="text-white text-lg" />
                 </div>
             </label>
 
@@ -120,7 +137,7 @@ export default function MenuDropdown() {
                 <div className="pb-3 border-b border-amber-200 mb-2">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-                            <span className="text-white text-xl">👤</span>
+                            <FaUser className="text-white text-xl" />
                         </div>
                         <div>
                             <p className="font-bold text-amber-900 text-sm">
@@ -134,52 +151,59 @@ export default function MenuDropdown() {
                 </div>
 
                 {/* Main Menu Items */}
-                {menuItems.map((item) => (
-                    <li key={item.label}>
-                        <button
-                            onClick={() => {
-                                if (item.path) {
-                                    navigate_to(item.path);
-                                } else if (item.action) {
-                                    item.action();
-                                }
-                            }}
-                            className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-amber-100 border border-amber-200 hover:border-amber-400 transition-colors duration-200"
-                        >
-                            <span className="text-lg">{item.icon}</span>
-                            <span className="font-medium text-amber-800 flex-1 text-left">
-                                {item.label}
-                            </span>
-                            {item.badge && (
-                                <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                                    {item.badge}
+                {menuItems.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                        <li key={item.label}>
+                            <button
+                                onClick={() => {
+                                    if (item.path) {
+                                        navigate_to(item.path);
+                                    } else if (item.action) {
+                                        item.action();
+                                    }
+                                }}
+                                className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-amber-100 border border-amber-200 hover:border-amber-400 transition-colors duration-200"
+                            >
+                                <IconComponent className="text-amber-600 text-lg" />
+                                <span className="font-medium text-amber-800 flex-1 text-left">
+                                    {item.label}
                                 </span>
-                            )}
-                        </button>
-                    </li>
-                ))}
+                                {item.badge && (
+                                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                        {item.badge}
+                                    </span>
+                                )}
+                            </button>
+                        </li>
+                    );
+                })}
 
                 {/* Admin Section */}
                 {data?.data?.role === 'admin' && (
                     <>
                         <div className="pt-2 border-t border-amber-200">
-                            <p className="text-amber-600 text-xs font-bold uppercase tracking-wider px-3 py-1">
-                                🛠️ Admin Tools
+                            <p className="text-amber-600 text-xs font-bold uppercase tracking-wider px-3 py-1 flex items-center gap-2">
+                                <FaTools />
+                                Admin Tools
                             </p>
                         </div>
-                        {adminItems.map((item) => (
-                            <li key={item.label}>
-                                <button
-                                    onClick={() => navigate_to(item.path)}
-                                    className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-purple-100 border border-purple-200 hover:border-purple-400 transition-colors duration-200"
-                                >
-                                    <span className="text-lg">{item.icon}</span>
-                                    <span className="font-medium text-purple-800 flex-1 text-left">
-                                        {item.label}
-                                    </span>
-                                </button>
-                            </li>
-                        ))}
+                        {adminItems.map((item) => {
+                            const IconComponent = item.icon;
+                            return (
+                                <li key={item.label}>
+                                    <button
+                                        onClick={() => navigate_to(item.path)}
+                                        className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-purple-100 border border-purple-200 hover:border-purple-400 transition-colors duration-200"
+                                    >
+                                        <IconComponent className="text-purple-600 text-lg" />
+                                        <span className="font-medium text-purple-800 flex-1 text-left">
+                                            {item.label}
+                                        </span>
+                                    </button>
+                                </li>
+                            );
+                        })}
                     </>
                 )}
 
@@ -189,7 +213,7 @@ export default function MenuDropdown() {
                         onClick={() => document.getElementById('donate_modal').showModal()}
                         className="flex items-center gap-3 w-full p-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white font-bold transition-colors duration-200"
                     >
-                        <span className="text-lg">❤️</span>
+                        <FaDonate className="text-lg" />
                         <span>Support Our Story</span>
                     </button>
                 </li>
@@ -201,7 +225,7 @@ export default function MenuDropdown() {
                             onClick={() => navigate_to("/login")}
                             className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-red-50 border border-red-200 hover:border-red-400 text-red-600 font-medium transition-colors duration-200"
                         >
-                            <span className="text-lg">🚪</span>
+                            <FaSignOutAlt className="text-lg" />
                             <span>Logout</span>
                         </button>
                     </li>
@@ -214,7 +238,7 @@ export default function MenuDropdown() {
                     <div className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
-                                <span className="text-white text-xl">❤️</span>
+                                <FaDonate className="text-white text-xl" />
                             </div>
                             <div>
                                 <h3 className="text-2xl font-bold text-amber-900">Support Our Library</h3>
@@ -267,6 +291,279 @@ export default function MenuDropdown() {
         </div>
     );
 }
+
+
+
+
+// import { useQuery } from "@tanstack/react-query";
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { _userInfo } from "../utils/axios_controllers";
+// import AddBookRequest from "./AddBookRequest";
+// import login_info from "../login_info";
+
+// export default function MenuDropdown() {
+//     const navigate_to = useNavigate();
+//     const [amount, setAmount] = useState(0);
+
+//     // User info
+//     const { data, isLoading } = useQuery({ 
+//         queryKey: ['userInfo'], 
+//         queryFn: _userInfo 
+//     });
+
+//     const isLoggedIn = login_info.user_name || data?.data;
+
+//     // Handle donation
+//     const handleDonate = async () => {
+//         console.log('click');
+//         const response = await fetch('https://book-store-server-lyart.vercel.app/init', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({ amount }),
+//             credentials: 'include'
+//         });
+//         const jsonRes = await response.json();
+//         window.location.replace(jsonRes.GatewayPageURL);
+//     };
+
+//     const menuItems = [
+//         { 
+//             icon: "👤", 
+//             label: "Profile", 
+//             path: "/userprofile",
+//             badge: "Active"
+//         },
+//         { 
+//             icon: "📚", 
+//             label: "My Library", 
+//             path: "/booklibrary" 
+//         },
+//         { 
+//             icon: "🔍", 
+//             label: "Browse Books", 
+//             path: "/booksearch" 
+//         },
+//         { 
+//             icon: "🏆", 
+//             label: "Challenges", 
+//             path: "/challenges" 
+//         },
+//         { 
+//             icon: "❤️", 
+//             label: "Our Supporters", 
+//             path: "/donars" 
+//         },
+//         { 
+//             icon: "📖", 
+//             label: "Request a Book", 
+//             action: () => document.getElementById('addBookRequest_modal').showModal()
+//         },
+//         { 
+//             icon: "🏅", 
+//             label: "Leaderboard", 
+//             path: "/challange-leaderbord" 
+//         },
+//     ];
+
+//     const adminItems = [
+//         { 
+//             icon: "👥", 
+//             label: "User Management", 
+//             path: "/user-management" 
+//         },
+//         { 
+//             icon: "📝", 
+//             label: "Contest Responses", 
+//             path: "/contest-response" 
+//         },
+//         { 
+//             icon: "🎯", 
+//             label: "Create Contest", 
+//             path: "/create-contest" 
+//         },
+//         { 
+//             icon: "📗", 
+//             label: "Create Book", 
+//             path: "/create-book" 
+//         },
+//         { 
+//             icon: "📋", 
+//             label: "Book Requests", 
+//             path: "/book-requests" 
+//         },
+//     ];
+
+//     return (
+//         <div className="dropdown dropdown-end">
+//             {/* Trigger Button */}
+//             <label 
+//                 tabIndex={0} 
+//                 className="btn btn-ghost btn-circle avatar relative"
+//             >
+//                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center shadow-lg border-2 border-white">
+//                     <span className="text-white font-bold text-lg">📚</span>
+//                 </div>
+//             </label>
+
+//             {/* Dropdown Menu */}
+//             <ul
+//                 tabIndex={0}
+//                 className="mt-3 z-[1] p-4 shadow-2xl menu dropdown-content bg-gradient-to-b from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-200 w-64 space-y-2"
+//             >
+//                 {/* User Info Header */}
+//                 <div className="pb-3 border-b border-amber-200 mb-2">
+//                     <div className="flex items-center gap-3">
+//                         <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+//                             <span className="text-white text-xl">👤</span>
+//                         </div>
+//                         <div>
+//                             <p className="font-bold text-amber-900 text-sm">
+//                                 {data?.data?.username || "Book Lover"}
+//                             </p>
+//                             <p className="text-amber-600 text-xs">
+//                                 {data?.data?.role === 'admin' ? '📊 Administrator' : '🌟 Reader'}
+//                             </p>
+//                         </div>
+//                     </div>
+//                 </div>
+
+//                 {/* Main Menu Items */}
+//                 {menuItems.map((item) => (
+//                     <li key={item.label}>
+//                         <button
+//                             onClick={() => {
+//                                 if (item.path) {
+//                                     navigate_to(item.path);
+//                                 } else if (item.action) {
+//                                     item.action();
+//                                 }
+//                             }}
+//                             className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-amber-100 border border-amber-200 hover:border-amber-400 transition-colors duration-200"
+//                         >
+//                             <span className="text-lg">{item.icon}</span>
+//                             <span className="font-medium text-amber-800 flex-1 text-left">
+//                                 {item.label}
+//                             </span>
+//                             {item.badge && (
+//                                 <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+//                                     {item.badge}
+//                                 </span>
+//                             )}
+//                         </button>
+//                     </li>
+//                 ))}
+
+//                 {/* Admin Section */}
+//                 {data?.data?.role === 'admin' && (
+//                     <>
+//                         <div className="pt-2 border-t border-amber-200">
+//                             <p className="text-amber-600 text-xs font-bold uppercase tracking-wider px-3 py-1">
+//                                 🛠️ Admin Tools
+//                             </p>
+//                         </div>
+//                         {adminItems.map((item) => (
+//                             <li key={item.label}>
+//                                 <button
+//                                     onClick={() => navigate_to(item.path)}
+//                                     className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-purple-100 border border-purple-200 hover:border-purple-400 transition-colors duration-200"
+//                                 >
+//                                     <span className="text-lg">{item.icon}</span>
+//                                     <span className="font-medium text-purple-800 flex-1 text-left">
+//                                         {item.label}
+//                                     </span>
+//                                 </button>
+//                             </li>
+//                         ))}
+//                     </>
+//                 )}
+
+//                 {/* Donate Button */}
+//                 <li className="pt-2 border-t border-amber-200">
+//                     <button
+//                         onClick={() => document.getElementById('donate_modal').showModal()}
+//                         className="flex items-center gap-3 w-full p-3 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white font-bold transition-colors duration-200"
+//                     >
+//                         <span className="text-lg">❤️</span>
+//                         <span>Support Our Story</span>
+//                     </button>
+//                 </li>
+
+//                 {/* Logout Button - Only show if logged in */}
+//                 {isLoggedIn && (
+//                     <li className="pt-2">
+//                         <button
+//                             onClick={() => navigate_to("/login")}
+//                             className="flex items-center gap-3 w-full p-3 rounded-xl bg-white/80 hover:bg-red-50 border border-red-200 hover:border-red-400 text-red-600 font-medium transition-colors duration-200"
+//                         >
+//                             <span className="text-lg">🚪</span>
+//                             <span>Logout</span>
+//                         </button>
+//                     </li>
+//                 )}
+//             </ul>
+
+//             {/* Donate Modal */}
+//             <dialog id="donate_modal" className="modal">
+//                 <div className="modal-box bg-gradient-to-br from-amber-50 to-orange-100 border-2 border-amber-200 rounded-2xl shadow-2xl p-0 overflow-hidden">
+//                     <div className="p-6">
+//                         <div className="flex items-center gap-3 mb-4">
+//                             <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center">
+//                                 <span className="text-white text-xl">❤️</span>
+//                             </div>
+//                             <div>
+//                                 <h3 className="text-2xl font-bold text-amber-900">Support Our Library</h3>
+//                                 <p className="text-amber-600">Help us add more amazing books!</p>
+//                             </div>
+//                         </div>
+
+//                         <div className="space-y-4">
+//                             <p className="text-amber-700">
+//                                 Your contribution helps us grow our collection and keep the stories flowing.
+//                             </p>
+                            
+//                             <div className="bg-white/80 rounded-xl p-4 border border-amber-200">
+//                                 <label className="block text-amber-800 font-medium mb-2">
+//                                     Donation Amount ($)
+//                                 </label>
+//                                 <input
+//                                     className="w-full px-4 py-3 bg-amber-50 border-2 border-amber-200 rounded-xl focus:border-amber-500 focus:outline-none transition-colors duration-200"
+//                                     value={amount}
+//                                     onChange={(e) => setAmount(e.target.value)}
+//                                     type="number"
+//                                     placeholder="Enter amount"
+//                                 />
+//                             </div>
+
+//                             <div className="flex gap-3 justify-end pt-4">
+//                                 <button
+//                                     className="px-6 py-3 border-2 border-amber-300 text-amber-700 rounded-xl hover:bg-amber-50 transition-colors duration-200 font-medium"
+//                                     onClick={() => document.getElementById('donate_modal').close()}
+//                                 >
+//                                     Cancel
+//                                 </button>
+//                                 <button
+//                                     className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:shadow-lg transition-colors duration-200 font-medium"
+//                                     onClick={handleDonate}
+//                                 >
+//                                     Donate Now
+//                                 </button>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+                
+//                 <form method="dialog" className="modal-backdrop">
+//                     <button>close</button>
+//                 </form>
+//             </dialog>
+
+//             <AddBookRequest />
+//         </div>
+//     );
+// }
 
 
 // import { useQuery } from "@tanstack/react-query";

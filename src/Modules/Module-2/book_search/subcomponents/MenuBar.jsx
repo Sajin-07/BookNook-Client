@@ -1,3 +1,4 @@
+//responsive
 import { useState } from "react";
 import MenuDropdown from "../../../../common_components/MenuDropdown";
 import "./styles/MenuBar.css";
@@ -13,27 +14,66 @@ export default function MenuBar({
 }) {
     const [inputval, change_inputval] = useState("");
     const [isSearchFocused, setIsSearchFocused] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+
+    const handleGenreClick = (genre) => {
+        if (genre === "All") {
+            change_current_genre("All");
+            change_books_to_show(books);
+        } else {
+            const filtered = books.filter(book => 
+                book.genre?.includes(genre)
+            );
+            change_current_genre(genre);
+            change_books_to_show(filtered);
+        }
+        change_current_page(1);
+        change_searched_keyword("");
+        setIsMobileMenuOpen(false);
+    };
+
+    const handleSearch = () => {
+        if (inputval) {
+            const filtered_book = books.filter((item) => {
+                const exist_in =
+                    item.name
+                        .toLowerCase()
+                        .includes(inputval.toLowerCase()) ||
+                    item.author
+                        .toLowerCase()
+                        .includes(inputval.toLowerCase());
+                return exist_in;
+            });
+            change_is_sorted_by_rating(false);
+            change_searched_keyword(inputval);
+            change_current_page(1);
+            change_books_to_show(filtered_book);
+            change_current_genre("");
+            change_inputval("");
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-amber-200 shadow-sm">
             <div className="container mx-auto px-4 py-3">
+                {/* Main Navigation Row */}
                 <div className="flex items-center justify-between">
                     {/* Logo/Brand */}
                     <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                            <span className="text-white text-lg">📚</span>
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                            <span className="text-white text-sm md:text-lg">📚</span>
                         </div>
                         <span 
-                            className="text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700 transition-colors" 
+                            className="text-xl md:text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700 transition-colors" 
                             onClick={() => navigate("/")}
                         >
                             BookNook
                         </span>
                     </div>
 
-                    {/* Search and Menu */}
-                    <div className="flex items-center space-x-4">
+                    {/* Desktop Search and Menu */}
+                    <div className="hidden md:flex items-center space-x-4">
                         {/* Search Bar */}
                         <div className="relative">
                             <div className="relative">
@@ -48,22 +88,7 @@ export default function MenuBar({
                                     value={inputval}
                                     onKeyDown={(key) => {
                                         if (key.code === "Enter" && inputval) {
-                                            const filtered_book = books.filter((item) => {
-                                                const exist_in =
-                                                    item.name
-                                                        .toLowerCase()
-                                                        .includes(inputval.toLowerCase()) ||
-                                                    item.author
-                                                        .toLowerCase()
-                                                        .includes(inputval.toLowerCase());
-                                                return exist_in;
-                                            });
-                                            change_is_sorted_by_rating(false);
-                                            change_searched_keyword(inputval);
-                                            change_current_page(1);
-                                            change_books_to_show(filtered_book);
-                                            change_current_genre("");
-                                            change_inputval("");
+                                            handleSearch();
                                         }
                                     }}
                                     onChange={(evnt) => {
@@ -126,37 +151,265 @@ export default function MenuBar({
                             <MenuDropdown />
                         </div>
                     </div>
+
+                    {/* Mobile Menu Button */}
+                    <div className="flex md:hidden items-center space-x-2">
+                        {/* Mobile Search Button */}
+                        <button
+                            onClick={handleSearch}
+                            className="p-2 text-amber-600 hover:bg-amber-100 rounded-full transition-colors"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                        
+                        {/* Mobile Menu Toggle */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="p-2 text-amber-600 hover:bg-amber-100 rounded-full transition-colors"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                {/* Quick Actions */}
-                <div className="flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-amber-100">
+                {/* Mobile Search Bar */}
+                <div className={`md:hidden mt-4 transition-all duration-300 ${
+                    isMobileMenuOpen ? 'block opacity-100' : 'hidden opacity-0'
+                }`}>
+                    <div className="relative">
+                        <input
+                            type="text"
+                            placeholder="Search books, authors..."
+                            className="w-full pl-10 pr-4 py-3 bg-amber-50 border-2 border-amber-200 rounded-full focus:outline-none focus:border-amber-500 placeholder-amber-400"
+                            value={inputval}
+                            onChange={(evnt) => change_inputval(evnt.target.value)}
+                            onKeyDown={(key) => {
+                                if (key.code === "Enter" && inputval) {
+                                    handleSearch();
+                                }
+                            }}
+                        />
+                        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-amber-400">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        {inputval && (
+                            <button
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400 hover:text-amber-600"
+                                onClick={() => change_inputval("")}
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                {/* Desktop Quick Actions */}
+                <div className="hidden md:flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-amber-100">
                     {["Fiction", "Mystery", "Science", "Romance", "All"].map((genre) => (
                         <button
                             key={genre}
                             className="text-sm text-amber-600 hover:text-amber-800 font-medium px-3 py-1 rounded-full hover:bg-amber-100 transition-colors duration-200"
-                            onClick={() => {
-                                if (genre === "All") {
-                                    change_current_genre("All");
-                                    change_books_to_show(books);
-                                } else {
-                                    const filtered = books.filter(book => 
-                                        book.genre?.includes(genre)
-                                    );
-                                    change_current_genre(genre);
-                                    change_books_to_show(filtered);
-                                }
-                                change_current_page(1);
-                                change_searched_keyword("");
-                            }}
+                            onClick={() => handleGenreClick(genre)}
                         >
                             {genre}
                         </button>
                     ))}
                 </div>
+
+                {/* Mobile Quick Actions */}
+                <div className={`md:hidden transition-all duration-300 ${
+                    isMobileMenuOpen ? 'block opacity-100' : 'hidden opacity-0'
+                }`}>
+                    <div className="flex flex-col space-y-3 mt-4 pt-4 border-t border-amber-100">
+                        {["Fiction", "Mystery", "Science", "Romance", "All"].map((genre) => (
+                            <button
+                                key={genre}
+                                className="text-sm text-amber-600 hover:text-amber-800 font-medium px-4 py-3 rounded-lg hover:bg-amber-100 transition-colors duration-200 text-left"
+                                onClick={() => handleGenreClick(genre)}
+                            >
+                                {genre}
+                            </button>
+                        ))}
+                    </div>
+                    
+                    {/* Mobile Menu Dropdown Area */}
+                    <div className="mt-4 pt-4 border-t border-amber-100">
+                        <MenuDropdown />
+                    </div>
+                </div>
             </div>
         </nav>
     );
 }
+
+
+// import { useState } from "react";
+// import MenuDropdown from "../../../../common_components/MenuDropdown";
+// import "./styles/MenuBar.css";
+// import { useNavigate } from "react-router-dom";
+
+// export default function MenuBar({
+//     books,
+//     change_searched_keyword,
+//     change_current_genre,
+//     change_current_page,
+//     change_books_to_show,
+//     change_is_sorted_by_rating,
+// }) {
+//     const [inputval, change_inputval] = useState("");
+//     const [isSearchFocused, setIsSearchFocused] = useState(false);
+//     const navigate = useNavigate();
+
+//     return (
+//         <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-amber-200 shadow-sm">
+//             <div className="container mx-auto px-4 py-3">
+//                 <div className="flex items-center justify-between">
+//                     {/* Logo/Brand */}
+//                     <div className="flex items-center space-x-3">
+//                         <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+//                             <span className="text-white text-lg">📚</span>
+//                         </div>
+//                         <span 
+//                             className="text-2xl font-bold text-amber-900 cursor-pointer hover:text-amber-700 transition-colors" 
+//                             onClick={() => navigate("/")}
+//                         >
+//                             BookNook
+//                         </span>
+//                     </div>
+
+//                     {/* Search and Menu */}
+//                     <div className="flex items-center space-x-4">
+//                         {/* Search Bar */}
+//                         <div className="relative">
+//                             <div className="relative">
+//                                 <input
+//                                     type="text"
+//                                     placeholder="Search books, authors..."
+//                                     className={`w-80 pl-12 pr-4 py-3 bg-amber-50 border-2 rounded-full focus:outline-none transition-colors duration-200 placeholder-amber-400 ${
+//                                         isSearchFocused 
+//                                             ? "border-amber-500 shadow-lg" 
+//                                             : "border-amber-200"
+//                                     }`}
+//                                     value={inputval}
+//                                     onKeyDown={(key) => {
+//                                         if (key.code === "Enter" && inputval) {
+//                                             const filtered_book = books.filter((item) => {
+//                                                 const exist_in =
+//                                                     item.name
+//                                                         .toLowerCase()
+//                                                         .includes(inputval.toLowerCase()) ||
+//                                                     item.author
+//                                                         .toLowerCase()
+//                                                         .includes(inputval.toLowerCase());
+//                                                 return exist_in;
+//                                             });
+//                                             change_is_sorted_by_rating(false);
+//                                             change_searched_keyword(inputval);
+//                                             change_current_page(1);
+//                                             change_books_to_show(filtered_book);
+//                                             change_current_genre("");
+//                                             change_inputval("");
+//                                         }
+//                                     }}
+//                                     onChange={(evnt) => {
+//                                         if (evnt.nativeEvent.data == null) {
+//                                             change_inputval(
+//                                                 inputval.slice(0, inputval.length - 1)
+//                                             );
+//                                         } else {
+//                                             change_inputval(
+//                                                 inputval + evnt.nativeEvent.data
+//                                             );
+//                                         }
+//                                     }}
+//                                     onFocus={() => setIsSearchFocused(true)}
+//                                     onBlur={() => setIsSearchFocused(false)}
+//                                 />
+                                
+//                                 {/* Search Icon */}
+//                                 <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+//                                     <svg 
+//                                         className={`w-5 h-5 transition-colors duration-200 ${
+//                                             isSearchFocused ? "text-amber-600" : "text-amber-400"
+//                                         }`} 
+//                                         fill="none" 
+//                                         stroke="currentColor" 
+//                                         viewBox="0 0 24 24"
+//                                     >
+//                                         <path 
+//                                             strokeLinecap="round" 
+//                                             strokeLinejoin="round" 
+//                                             strokeWidth={2} 
+//                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+//                                         />
+//                                     </svg>
+//                                 </div>
+
+//                                 {/* Clear Button */}
+//                                 {inputval && (
+//                                     <button
+//                                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400 hover:text-amber-600 transition-colors"
+//                                         onClick={() => change_inputval("")}
+//                                     >
+//                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+//                                         </svg>
+//                                     </button>
+//                                 )}
+//                             </div>
+
+//                             {/* Search Hint */}
+//                             {isSearchFocused && (
+//                                 <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-amber-200 p-2 text-xs text-amber-600">
+//                                     Press Enter to search
+//                                 </div>
+//                             )}
+//                         </div>
+
+//                         {/* Menu Dropdown */}
+//                         <div>
+//                             <MenuDropdown />
+//                         </div>
+//                     </div>
+//                 </div>
+
+//                 {/* Quick Actions */}
+//                 <div className="flex items-center justify-center space-x-6 mt-4 pt-4 border-t border-amber-100">
+//                     {["Fiction", "Mystery", "Science", "Romance", "All"].map((genre) => (
+//                         <button
+//                             key={genre}
+//                             className="text-sm text-amber-600 hover:text-amber-800 font-medium px-3 py-1 rounded-full hover:bg-amber-100 transition-colors duration-200"
+//                             onClick={() => {
+//                                 if (genre === "All") {
+//                                     change_current_genre("All");
+//                                     change_books_to_show(books);
+//                                 } else {
+//                                     const filtered = books.filter(book => 
+//                                         book.genre?.includes(genre)
+//                                     );
+//                                     change_current_genre(genre);
+//                                     change_books_to_show(filtered);
+//                                 }
+//                                 change_current_page(1);
+//                                 change_searched_keyword("");
+//                             }}
+//                         >
+//                             {genre}
+//                         </button>
+//                     ))}
+//                 </div>
+//             </div>
+//         </nav>
+//     );
+// }
 
 
 // import { useState } from "react";

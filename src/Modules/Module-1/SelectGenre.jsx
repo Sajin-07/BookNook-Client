@@ -25,7 +25,6 @@ export default function SelectGenre() {
     "love",
     "contemporary",
     "historical-romance",
-    "lgbt",
     "queer",
     "nonfiction",
     "thriller",
